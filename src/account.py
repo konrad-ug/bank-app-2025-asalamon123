@@ -67,3 +67,14 @@ class Account:
         
         self.balance += amount
         return True
+
+class BusinessAccount(Account):
+    def __init__(self, company_name, nip): 
+        self.company_name = company_name
+
+        if len(nip) == 10 and nip.isdigit(): 
+            self.nip = nip
+        else: 
+            self.nip = "Invalid"
+
+        self.balance = 0
