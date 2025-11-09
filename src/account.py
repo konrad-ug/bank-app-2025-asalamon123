@@ -51,3 +51,19 @@ class Account:
             return False
 
         return birth_year > 1960
+
+    def send_transfer(self, amount): 
+        if amount <= 0: 
+            return False
+        if self.balance >= amount:
+            self.balance -= amount
+            return True
+        
+        return False
+
+    def recieve_transfer(self, amount): 
+        if amount <= 0: 
+            return False
+        
+        self.balance += amount
+        return True

@@ -60,3 +60,37 @@ class TestAccount:
     def test_no_promo_if_code_not_start_with_PROMO(self):
         account = Account("Kasia", "Nowak", "65010112345", "DISCOUNT_50")
         assert account.balance == 0
+
+
+class TestAccountTransfers:
+    def test_recieve_transfer(self):
+        account = Account("John", "Doe", "65010112345", None)
+        result = account.recieve_transfer(100)
+        assert result is True
+        assert account.balance == 100
+
+    def test_send_transfer(self):
+        account = Account("John", "Doe", "65010112345", None)
+        account.recieve_transfer(200)
+        result = account.send_transfer(50)
+        assert result is True
+        assert account.balance == 150
+    
+    def test_send_fails_if_not_enough_balance(self): 
+        account = Account("John", "Doe", "65010112345", None)
+        result = account.send_transfer(50)
+        assert result is False
+        assert account.balance == 0 
+    
+    def test_receive_fails_if_negative_amount(self):
+        account = Account("John", "Doe", "65010112345", None)
+        result = account.recieve_transfer(-200)
+        assert result is False
+        assert account.balance == 0
+
+    def test_send_fails_if_negative_amount(self):
+        account = Account("John", "Doe", "65010112345", None)
+        account.recieve_transfer(100)
+        result = account.send_transfer(-20)
+        assert result is False
+        assert account.balance == 100
