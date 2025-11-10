@@ -12,6 +12,9 @@ class TestBusinessAccount:
         assert account.nip == "Invalid"
 
 
+
+    
+class TestBusinessAccountTransfers:
     def test_recieve_transfer_for_business_account(self):
         account = BusinessAccount("MegaCorp", "1234567890")
         result = account.recieve_transfer(100)
@@ -29,5 +32,18 @@ class TestBusinessAccount:
         account = BusinessAccount("MegaCorp", "1234567890")
         result = account.send_transfer(50)
         assert result is False
-        assert account.balance == 0 
-        
+        assert account.balance == 0
+
+    def test_express_transfer_business_account(self):
+        account = BusinessAccount("MegaCorp", "1234567890")
+        account.recieve_transfer(100)
+        result = account.send_express_transfer(100)
+        assert result is True
+        assert account.balance == -5
+
+    def test_failed_express_transfer_business_account(self):
+        account = BusinessAccount("MegaCorp", "1234567890")
+        account.recieve_transfer(50)
+        result = account.send_express_transfer(100)
+        assert result is False
+        assert account.balance == 50 

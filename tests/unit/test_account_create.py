@@ -94,3 +94,17 @@ class TestAccountTransfers:
         result = account.send_transfer(-20)
         assert result is False
         assert account.balance == 100
+
+    def test_express_transfer_personal_account(self):
+        account = Account("John", "Doe", "65010112345", None)
+        account.recieve_transfer(100)
+        result = account.send_express_transfer(100)
+        assert result is True
+        assert account.balance == -1
+
+    def test_failed_express_transfer_personal_account(self):
+        account = Account("John", "Doe", "65010112345", None)
+        account.recieve_transfer(50)
+        result = account.send_express_transfer(100)
+        assert result is False
+        assert account.balance == 50

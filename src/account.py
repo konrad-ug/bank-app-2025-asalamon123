@@ -68,6 +68,14 @@ class Account:
         self.balance += amount
         return True
 
+    def send_express_transfer(self, amount):
+        fee = 1
+        total = amount + fee
+        if (self.balance + fee) >= total:
+            self.balance -= total
+            return True
+        return False
+
 class BusinessAccount(Account):
     def __init__(self, company_name, nip): 
         self.company_name = company_name
@@ -78,3 +86,11 @@ class BusinessAccount(Account):
             self.nip = "Invalid"
 
         self.balance = 0
+
+    def send_express_transfer(self, amount):
+        fee = 5
+        total = amount + fee
+        if (self.balance + fee) >= total:
+            self.balance -= total
+            return True
+        return False
