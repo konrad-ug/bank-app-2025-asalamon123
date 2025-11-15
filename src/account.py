@@ -23,24 +23,30 @@ class Account:
         try:
             yy = int(self.pesel[0:2])
             mm = int(self.pesel[2:4])
-
         except ValueError:
             return None
 
+        # PESEL century decoding
         if 1 <= mm <= 12:
             century = 1900
         elif 21 <= mm <= 32:
             century = 2000
+            mm -= 20
         elif 41 <= mm <= 52:
             century = 2100
+            mm -= 40
         elif 61 <= mm <= 72:
             century = 2200
+            mm -= 60
         elif 81 <= mm <= 92:
             century = 1800
+            mm -= 80
         else:
             return None
 
         return century + yy
+
+
 
     def can_get_promo(self):
         if not (self.promo_code and self.promo_code.startswith("PROMO_")):

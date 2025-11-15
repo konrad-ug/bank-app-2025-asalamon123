@@ -12,7 +12,6 @@ class TestBusinessAccount:
         assert account.nip == "Invalid"
 
 
-
     
 class TestBusinessAccountTransfers:
     def test_recieve_transfer_for_business_account(self):

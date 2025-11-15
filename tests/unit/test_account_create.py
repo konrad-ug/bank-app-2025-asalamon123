@@ -61,6 +61,35 @@ class TestAccount:
         account = Account("Kasia", "Nowak", "65010112345", "DISCOUNT_50")
         assert account.balance == 0
 
+    def test_extract_year_value_error(self):
+        account = Account("John", "Doe", "XX051231", "PROMO_ABC")
+        assert account.extract_year_from_pesel() is None
+
+    def test_extract_year_invalid_month(self):
+        account = Account("John", "Doe", "99001312345", "PROMO_ABC")  # mm = 00
+        assert account.extract_year_from_pesel() is None
+
+    def test_extract_year_not_int_error(self):
+        account = Account("John", "Doe", "65A10112345", "PROMO_ABC")
+        assert account.extract_year_from_pesel() is None
+        assert account.balance == 0
+
+    def test_extract_year_2100_century(self):
+        account = Account("John", "Doe", "41510112345", "PROMO_ABC")
+        assert account.extract_year_from_pesel() == 2141
+        assert account.balance == 50
+
+    def test_extract_year_2200_century(self):
+        account = Account("John", "Doe", "61710112345", "PROMO_ABC")
+        assert account.extract_year_from_pesel() == 2261
+        assert account.balance == 50
+
+    def test_extract_year_1800_century(self):
+        account = Account("John", "Doe", "81810112345", "PROMO_ABC")
+        assert account.extract_year_from_pesel() == 1881
+        assert account.balance == 0
+
+
 
 class TestAccountTransfers:
     def test_recieve_transfer(self):
@@ -108,3 +137,7 @@ class TestAccountTransfers:
         result = account.send_express_transfer(100)
         assert result is False
         assert account.balance == 50
+
+
+    
+
