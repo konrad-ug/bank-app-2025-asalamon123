@@ -16,6 +16,8 @@ class Account:
         else:
             self.balance = 0
 
+        self.history = []
+
 
     def extract_year_from_pesel(self):
         if self.pesel == "Invalid":
@@ -26,7 +28,7 @@ class Account:
         except ValueError:
             return None
 
-        # PESEL century decoding
+
         if 1 <= mm <= 12:
             century = 1900
         elif 21 <= mm <= 32:
@@ -63,6 +65,7 @@ class Account:
             return False
         if self.balance >= amount:
             self.balance -= amount
+            self.history.append(-amount)
             return True
         
         return False
@@ -72,6 +75,7 @@ class Account:
             return False
         
         self.balance += amount
+        self.history.append(amount)
         return True
 
     def send_express_transfer(self, amount):
@@ -79,6 +83,8 @@ class Account:
         total = amount + fee
         if (self.balance + fee) >= total:
             self.balance -= total
+            self.history.append(-amount)
+            self.history.append(-fee)
             return True
         return False
 
@@ -92,6 +98,7 @@ class BusinessAccount(Account):
             self.nip = "Invalid"
 
         self.balance = 0
+        self.history = []
 
     def send_express_transfer(self, amount):
         fee = 5

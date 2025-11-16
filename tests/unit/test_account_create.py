@@ -138,6 +138,26 @@ class TestAccountTransfers:
         assert result is False
         assert account.balance == 50
 
+class TestAccountHistory: 
+    def test_history_receive_transfer(self):
+        account = Account("John", "Doe", "00210112345", "PROMO_ABC") 
+        account.recieve_transfer(500)
+        assert account.history == [500]
 
-    
+    def test_history_send_transfer(self):
+        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
+        account.recieve_transfer(500)
+        account.send_transfer(200)
+        assert account.history == [500, -200]
 
+    def test_history_express_transfer(self):
+        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
+        account.recieve_transfer(500)
+        account.send_express_transfer(300)  
+        assert account.history == [500, -300, -1]
+
+    def test_history_failed_send(self):
+        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
+        result = account.send_transfer(100)
+        assert result is False
+        assert account.history == []
