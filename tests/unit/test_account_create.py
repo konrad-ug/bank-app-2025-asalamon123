@@ -174,12 +174,14 @@ class TestAccountLoan:
         account.recieve_transfer(100)
         result = account.submit_for_loan(100)
         assert result is True
+        assert account.balance == 650
 
 
     def test_loan_not_accepted_not_enough_transfers(self):
         account = Account("John", "Doe", "00210112345", "PROMO_ABC")
         result = account.submit_for_loan(100)
         assert result is False
+        assert account.balance == 50
 
 
     def test_loan_not_accepted_transfer_sum_bigger_than_amount(self):
@@ -191,6 +193,7 @@ class TestAccountLoan:
         account.recieve_transfer(100)
         result = account.submit_for_loan(1000)
         assert result is False
+        assert account.balance == 550
 
 
     def test_loan_not_accepted_sent_transfer(self):

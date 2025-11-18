@@ -91,6 +91,7 @@ class Account:
     
     def submit_for_loan(self, amount): 
         if len(self.history) >= 5 and sum(self.history[-5:]) >= amount and all(t > 0 for t in self.history[-3:]):
+            self.balance += amount
             return True
 
         return False 
