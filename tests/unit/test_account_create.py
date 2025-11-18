@@ -161,3 +161,44 @@ class TestAccountHistory:
         result = account.send_transfer(100)
         assert result is False
         assert account.history == []
+
+
+
+class TestAccountLoan: 
+    def test_loan_accepted(self):
+        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        result = account.submit_for_loan(100)
+        assert result is True
+
+
+    def test_loan_not_accepted_not_enough_transfers(self):
+        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
+        result = account.submit_for_loan(100)
+        assert result is False
+
+
+    def test_loan_not_accepted_transfer_sum_bigger_than_amount(self):
+        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        result = account.submit_for_loan(1000)
+        assert result is False
+
+
+    def test_loan_not_accepted_sent_transfer(self):
+        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        account.recieve_transfer(100)
+        account.send_transfer(100)
+        result = account.submit_for_loan(100)
+        assert result is False

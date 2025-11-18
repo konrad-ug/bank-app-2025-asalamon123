@@ -88,6 +88,15 @@ class Account:
             return True
         return False
 
+    
+    def submit_for_loan(self, amount): 
+        if len(self.history) >= 5 and sum(self.history[-5:]) >= amount and all(t > 0 for t in self.history[-3:]):
+            return True
+
+        return False 
+
+
+
 class BusinessAccount(Account):
     def __init__(self, company_name, nip): 
         self.company_name = company_name
