@@ -1,5 +1,6 @@
 import pytest
 from src.account import Account
+from src.account import AccountRegistry
 
 @pytest.fixture
 def acc():
@@ -204,3 +205,17 @@ class TestAccountLoan:
         assert acc._recent_transfers_positive() is True
         acc.history = [50, -50, 50]
         assert acc._recent_transfers_positive() is False
+
+
+class TestAddToRegistry: 
+    def test_create_empty_registry(self):
+        registry = AccountRegistry()
+
+        assert registry.accounts == []
+
+    def test_add_to_registery(self, acc):
+        registry = AccountRegistry()
+        registry.add_account(acc)
+
+        assert len(registry.accounts) == 1
+        assert registry.accounts[0] is acc

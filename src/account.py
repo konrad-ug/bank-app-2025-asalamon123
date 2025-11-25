@@ -136,3 +136,12 @@ class BusinessAccount(Account):
             return True
 
         return False 
+
+
+
+class AccountRegistry: 
+    def __init__(self): 
+        self.accounts = []
+
+    def add_account(self, account: Account):
+        self.accounts.append(account)
