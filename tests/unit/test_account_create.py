@@ -5,6 +5,10 @@ from src.account import Account
 def acc():
     return Account("John", "Doe", "65010112345", "PROMO_ABC")
 
+@pytest.fixture
+def acc2():
+    return Account("John", "Doe", "65010112345", None)
+
 class TestAccount:
     def test_account_creation(self):
         account = Account("John", "Doe", "12345678912", None)
@@ -95,51 +99,44 @@ class TestAccount:
 
 
 class TestAccountTransfers:
-    def test_recieve_transfer(self):
-        account = Account("John", "Doe", "65010112345", None)
-        result = account.recieve_transfer(100)
+    def test_recieve_transfer(self, acc2):
+        result = acc2.recieve_transfer(100)
         assert result is True
-        assert account.balance == 100
+        assert acc2.balance == 100
 
-    def test_send_transfer(self):
-        account = Account("John", "Doe", "65010112345", None)
-        account.recieve_transfer(200)
-        result = account.send_transfer(50)
+    def test_send_transfer(self, acc2):
+        acc2.recieve_transfer(200)
+        result = acc2.send_transfer(50)
         assert result is True
-        assert account.balance == 150
+        assert acc2.balance == 150
     
-    def test_send_fails_if_not_enough_balance(self): 
-        account = Account("John", "Doe", "65010112345", None)
-        result = account.send_transfer(50)
+    def test_send_fails_if_not_enough_balance(self, acc2): 
+        result = acc2.send_transfer(50)
         assert result is False
-        assert account.balance == 0 
+        assert acc2.balance == 0 
     
-    def test_receive_fails_if_negative_amount(self):
-        account = Account("John", "Doe", "65010112345", None)
-        result = account.recieve_transfer(-200)
+    def test_receive_fails_if_negative_amount(self, acc2):
+        result = acc2.recieve_transfer(-200)
         assert result is False
-        assert account.balance == 0
+        assert acc2.balance == 0
 
-    def test_send_fails_if_negative_amount(self):
-        account = Account("John", "Doe", "65010112345", None)
-        account.recieve_transfer(100)
-        result = account.send_transfer(-20)
+    def test_send_fails_if_negative_amount(self, acc2):
+        acc2.recieve_transfer(100)
+        result = acc2.send_transfer(-20)
         assert result is False
-        assert account.balance == 100
+        assert acc2.balance == 100
 
-    def test_express_transfer_personal_account(self):
-        account = Account("John", "Doe", "65010112345", None)
-        account.recieve_transfer(100)
-        result = account.send_express_transfer(100)
+    def test_express_transfer_personal_account(self, acc2):
+        acc2.recieve_transfer(100)
+        result = acc2.send_express_transfer(100)
         assert result is True
-        assert account.balance == -1
+        assert acc2.balance == -1
 
-    def test_failed_express_transfer_personal_account(self):
-        account = Account("John", "Doe", "65010112345", None)
-        account.recieve_transfer(50)
-        result = account.send_express_transfer(100)
+    def test_failed_express_transfer_personal_account(self, acc2):
+        acc2.recieve_transfer(50)
+        result = acc2.send_express_transfer(100)
         assert result is False
-        assert account.balance == 50
+        assert acc2.balance == 50
 
 class TestAccountHistory: 
     def test_history_receive_transfer(self, acc): 
