@@ -1,5 +1,9 @@
+import pytest
 from src.account import Account
 
+@pytest.fixture
+def acc():
+    return Account("John", "Doe", "65010112345", "PROMO_ABC")
 
 class TestAccount:
     def test_account_creation(self):
@@ -28,10 +32,9 @@ class TestAccount:
         assert account.promo_code == "wrong_code"
         assert account.balance == 0
 
-    def test_account_creation_valid_code(self):
-        account = Account("John", "Doe", "65010112345", "PROMO_ABC")  
-        assert account.promo_code == "PROMO_ABC"
-        assert account.balance == 50
+    def test_account_creation_valid_code(self, acc):  
+        assert acc.promo_code == "PROMO_ABC"
+        assert acc.balance == 50
 
     def test_promo_born_after_1960(self):
         # 1965-01-01
@@ -139,69 +142,61 @@ class TestAccountTransfers:
         assert account.balance == 50
 
 class TestAccountHistory: 
-    def test_history_receive_transfer(self):
-        account = Account("John", "Doe", "00210112345", "PROMO_ABC") 
-        account.recieve_transfer(500)
-        assert account.history == [500]
+    def test_history_receive_transfer(self, acc): 
+        acc.recieve_transfer(500)
+        assert acc.history == [500]
 
-    def test_history_send_transfer(self):
-        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
-        account.recieve_transfer(500)
-        account.send_transfer(200)
-        assert account.history == [500, -200]
+    def test_history_send_transfer(self, acc):
+        acc.recieve_transfer(500)
+        acc.send_transfer(200)
+        assert acc.history == [500, -200]
 
-    def test_history_express_transfer(self):
-        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
-        account.recieve_transfer(500)
-        account.send_express_transfer(300)  
-        assert account.history == [500, -300, -1]
+    def test_history_express_transfer(self, acc):
+        acc.recieve_transfer(500)
+        acc.send_express_transfer(300)  
+        assert acc.history == [500, -300, -1]
 
-    def test_history_failed_send(self):
-        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
-        result = account.send_transfer(100)
+    def test_history_failed_send(self, acc):
+        result = acc.send_transfer(100)
         assert result is False
-        assert account.history == []
+        assert acc.history == []
 
 
 
 class TestAccountLoan: 
-    def test_loan_accepted(self):
-        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        result = account.submit_for_loan(100)
+    def test_loan_accepted(self, acc):
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        result = acc.submit_for_loan(100)
         assert result is True
-        assert account.balance == 650
+        assert acc.balance == 650
 
 
-    def test_loan_not_accepted_not_enough_transfers(self):
-        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
-        result = account.submit_for_loan(100)
+    def test_loan_not_accepted_not_enough_transfers(self, acc):
+        result = acc.submit_for_loan(100)
         assert result is False
-        assert account.balance == 50
+        assert acc.balance == 50
 
 
-    def test_loan_not_accepted_transfer_sum_bigger_than_amount(self):
-        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        result = account.submit_for_loan(1000)
+    def test_loan_not_accepted_transfer_sum_bigger_than_amount(self, acc):
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        result = acc.submit_for_loan(1000)
         assert result is False
-        assert account.balance == 550
+        assert acc.balance == 550
 
 
-    def test_loan_not_accepted_sent_transfer(self):
-        account = Account("John", "Doe", "00210112345", "PROMO_ABC")
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        account.recieve_transfer(100)
-        account.send_transfer(100)
-        result = account.submit_for_loan(100)
+    def test_loan_not_accepted_sent_transfer(self, acc):
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        acc.send_transfer(100)
+        result = acc.submit_for_loan(100)
         assert result is False
