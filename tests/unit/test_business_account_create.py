@@ -1,4 +1,9 @@
+import pytest
 from src.account import BusinessAccount
+
+@pytest.fixture
+def acc():
+    return BusinessAccount("MegaCorp", "1234567890")
 
 class TestBusinessAccount: 
     def test_business_account_creation(self):
@@ -46,3 +51,26 @@ class TestBusinessAccountTransfers:
         result = account.send_express_transfer(100)
         assert result is False
         assert account.balance == 50 
+
+class TestBusinessAccountLoan: 
+    def test_loan_accepted(self, acc):
+        acc.recieve_transfer(1775)
+        acc.send_transfer(1775)
+        acc.recieve_transfer(100)
+        acc.recieve_transfer(100)
+        result = acc.take_loan(100)
+        assert result is True
+        assert acc.balance == 300
+
+    def test_not_enough_balance(self, acc):
+        acc.send_transfer(1775)
+        acc.recieve_transfer(2000)
+        result = acc.take_loan(1775)
+        assert result is False
+        assert acc._has_enough_balance(1775) is False 
+
+    def test_no_ZUS(self, acc):
+        acc.recieve_transfer(2000)
+        result = acc.take_loan(100)
+        assert result is False
+        assert acc._has_enough_balance(1775) is False 

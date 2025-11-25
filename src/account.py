@@ -123,3 +123,16 @@ class BusinessAccount(Account):
             self.balance -= total
             return True
         return False
+
+    def _has_enough_balance(self, amount):
+        return self.balance >= 2 * amount
+
+    def _has_correct_history(self): 
+        return -1775 in self.history
+
+    def take_loan(self, amount): 
+        if self._has_enough_balance(amount) and self._has_correct_history():
+            self.balance += amount
+            return True
+
+        return False 
