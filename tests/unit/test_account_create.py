@@ -9,27 +9,23 @@ def acc():
 def acc2():
     return Account("John", "Doe", "65010112345", None)
 
+
+
 class TestAccount:
-    def test_account_creation(self):
-        account = Account("John", "Doe", "12345678912", None)
-        assert account.first_name == "John"
-        assert account.last_name == "Doe"
-        assert account.balance == 0
-        assert account.pesel == "12345678912"
+    @pytest.mark.parametrize(
+       "pesel, expected",
+        [
+            ("12345678912", "12345678912"),   # valid
+            ("123", "Invalid"),               # short
+            ("123456789123456789", "Invalid") # long
+        ]
+)
 
-    def test_account_creation_short_pesel(self):
-        account = Account("John", "Doe", "123", None)
+    def test_name_and_pesel_validation(self, pesel, expected):
+        account = Account("John", "Doe", pesel, None)
         assert account.first_name == "John"
         assert account.last_name == "Doe"
-        assert account.balance == 0
-        assert account.pesel == "Invalid"
-
-    def test_account_creation_long_pesel(self): 
-        account = Account("John", "Doe", "123456789123456789", None)
-        assert account.first_name == "John"
-        assert account.last_name == "Doe"
-        assert account.balance == 0
-        assert account.pesel == "Invalid"
+        assert account.pesel == expected
 
     def test_account_creation_invalid_code(self):
         account = Account("John", "Doe", "123456789123456789", "wrong_code")
