@@ -254,3 +254,16 @@ class TestAddToRegistry:
         result = registry.return_all()
 
         assert result == []
+
+    def test_count(self, registry, acc, acc2):
+        registry.add_account(acc)
+        registry.add_account(acc2)
+
+        result = registry.count_accounts()
+
+        assert result == 2
+
+    def test_count_empty(self, registry, acc, acc2):
+        result = registry.count_accounts()
+
+        assert result == 0

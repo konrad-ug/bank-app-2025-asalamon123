@@ -154,4 +154,7 @@ class AccountRegistry:
 
     def return_all(self):
         return self.accounts
+
+    def count_accounts(self):
+        return len(self.accounts)
         
