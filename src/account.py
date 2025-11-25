@@ -88,9 +88,15 @@ class Account:
             return True
         return False
 
+
+    def _has_enough_history(self, amount):
+        return len(self.history) >= 5 and sum(self.history[-5:]) >= amount
+    
+    def _recent_transfers_positive(self):
+        return all(t > 0 for t in self.history[-3:])
     
     def submit_for_loan(self, amount): 
-        if len(self.history) >= 5 and sum(self.history[-5:]) >= amount and all(t > 0 for t in self.history[-3:]):
+        if self._has_enough_history(amount) and self._recent_transfers_positive():
             self.balance += amount
             return True
 

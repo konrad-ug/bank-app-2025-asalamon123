@@ -193,3 +193,14 @@ class TestAccountLoan:
         acc.send_transfer(100)
         result = acc.submit_for_loan(100)
         assert result is False
+
+    def test_has_enough_history(self, acc):
+        acc.history = [100, 100, 100, 100, 100]
+        assert acc._has_enough_history(400) is True
+        assert acc._has_enough_history(600) is False
+
+    def test_recent_transfers_positive(self, acc):
+        acc.history = [50, 50, 50]
+        assert acc._recent_transfers_positive() is True
+        acc.history = [50, -50, 50]
+        assert acc._recent_transfers_positive() is False
