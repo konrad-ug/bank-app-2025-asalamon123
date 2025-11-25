@@ -241,3 +241,16 @@ class TestAddToRegistry:
         registry.add_account(other_acc)
         result = registry.search_by_pesel("123")
         assert result is None
+
+    def test_return_all(self, registry, acc, acc2):
+        registry.add_account(acc)
+        registry.add_account(acc2)
+
+        result = registry.return_all()
+
+        assert result == [acc, acc2]
+
+    def test_return_all_empty(self, registry, acc, acc2):
+        result = registry.return_all()
+
+        assert result == []

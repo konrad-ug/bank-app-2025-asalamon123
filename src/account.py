@@ -151,4 +151,7 @@ class AccountRegistry:
             if acc.pesel == pesel:
                 return acc
         return None
+
+    def return_all(self):
+        return self.accounts
         
