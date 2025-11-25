@@ -11,6 +11,10 @@ def acc2():
     return Account("John", "Doe", "65010112345", None)
 
 
+@pytest.fixture
+def registry():
+    return AccountRegistry()
+
 
 class TestAccount:
     @pytest.mark.parametrize(
@@ -208,14 +212,32 @@ class TestAccountLoan:
 
 
 class TestAddToRegistry: 
-    def test_create_empty_registry(self):
-        registry = AccountRegistry()
-
+    def test_create_empty_registry(self, registry):
         assert registry.accounts == []
 
-    def test_add_to_registery(self, acc):
-        registry = AccountRegistry()
+    def test_add_to_registery(self, acc, registry):
         registry.add_account(acc)
 
         assert len(registry.accounts) == 1
         assert registry.accounts[0] is acc
+
+    def test_search_by_pesel(self, registry, acc):
+        registry.add_account(acc)
+        other_acc = Account("John", "Doe", "65030112345", "PROMO_ABC")
+
+        registry.add_account(other_acc)
+        result = registry.search_by_pesel("65010112345")
+        assert result == acc
+
+    def test_fail_search_no_acc(self, registry):
+        result = registry.search_by_pesel("65010112345")
+
+        assert result is None
+
+    def test_fail_wrong_pesel(self, registry, acc):
+        registry.add_account(acc)
+        other_acc = Account("John", "Doe", "65030112345", "PROMO_ABC")
+
+        registry.add_account(other_acc)
+        result = registry.search_by_pesel("123")
+        assert result is None

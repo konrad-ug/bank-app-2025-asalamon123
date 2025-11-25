@@ -145,3 +145,10 @@ class AccountRegistry:
 
     def add_account(self, account: Account):
         self.accounts.append(account)
+
+    def search_by_pesel(self, pesel):
+        for acc in self.accounts:
+            if acc.pesel == pesel:
+                return acc
+        return None
+        
