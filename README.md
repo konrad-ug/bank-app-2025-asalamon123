@@ -2,13 +2,14 @@
 # Bank-app
 
 ## Author:
-name:
+name: Adam
 
-surname:
+surname: Salamon
 
-group:
+group: 3
 
 ## How to start the app
+
 
 
 ## How to execute tests
