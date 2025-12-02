@@ -59,5 +59,12 @@ def update_account(pesel):
 
 @app.route("/api/accounts/<pesel>", methods=['DELETE'])
 def delete_account(pesel):
-    #implementacja powinna znaleźć się tutaj
+    acc = registry.search_by_pesel(pesel)
+
+    if not acc:
+        return jsonify({"error": "Account not found"}), 404
+
+    registry.accounts.remove(acc)
     return jsonify({"message": "Account deleted"}), 200
+    
+
