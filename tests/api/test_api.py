@@ -60,3 +60,15 @@ class TestAccount:
 
         
         requests.delete(f"{URL}/{account['pesel']}")
+
+    def test_delete_account(self, account):
+        response = requests.post(URL, json=account)
+        assert response.status_code == 201
+
+        del_response = requests.delete(f"{URL}/{account['pesel']}")
+        assert del_response.status_code == 200
+        data = del_response.json()
+        assert data["message"] == "Account deleted"
+
+        get_response = requests.get(f"{URL}/{account['pesel']}")
+        assert get_response.status_code == 404
