@@ -39,6 +39,8 @@ def get_account_by_pesel(pesel):
                 "promo_code": acc.promo_code, "history": acc.history}
         
         return jsonify(data), 200
+    else: 
+        return jsonify({"error": "no account found"}), 404
     
 
 @app.route("/api/accounts/<pesel>", methods=['PATCH'])
