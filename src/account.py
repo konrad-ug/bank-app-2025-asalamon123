@@ -157,4 +157,10 @@ class AccountRegistry:
 
     def count_accounts(self):
         return len(self.accounts)
-        
+    
+    def delete_account(self, pesel):
+        for i, acc in enumerate(self.accounts):
+            if acc.pesel == pesel:
+                del self.accounts[i]  
+                return True
+        return False

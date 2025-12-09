@@ -33,6 +33,8 @@ class TestAccount:
         assert account_data["promo_code"] == account["promo_code"]
         assert account_data["balance"] == 50
 
+        requests.delete(f"{URL}/{account['pesel']}")
+
     def test_get_account_not_found(self):
         response = requests.get(f"{URL}/00000000000")
         assert response.status_code == 404
