@@ -86,3 +86,86 @@ class TestAccount:
 
         get_response = requests.get(f"{URL}/{account['pesel']}")
         assert get_response.status_code == 404
+
+class TestTransfer: 
+    def test_incoming_transfer(self, account):
+        requests.post(URL, json=account)
+        response = requests.post(
+            f"{URL}/{account['pesel']}/transfer",
+            json={"amount": 500, "type": "incoming"}
+        )
+
+        requests.delete(f"{URL}/{account['pesel']}") 
+
+        assert response.status_code == 200
+        assert response.json()["message"] == "Zlecenie przyjęto do realizacji"
+
+    def test_outgoing_transfer(self, account):
+        requests.post(URL, json=account)
+        requests.post(
+            f"{URL}/{account['pesel']}/transfer",
+            json={"amount": 500, "type": "incoming"}
+        )
+
+        response = requests.post(
+            f"{URL}/{account['pesel']}/transfer",
+            json={"amount": 100, "type": "outgoing"}
+        )
+
+        requests.delete(f"{URL}/{account['pesel']}") 
+
+        assert response.status_code == 200
+        assert response.json()["message"] == "Zlecenie przyjęto do realizacji"
+
+    def test_outgoing_transfer_not_enough_balance(self, account):
+        requests.post(URL, json=account)
+        response = requests.post(
+            f"{URL}/{account['pesel']}/transfer",
+            json={"amount": 100, "type": "outgoing"}
+        )
+
+        requests.delete(f"{URL}/{account['pesel']}") 
+
+        assert response.status_code == 422
+        assert response.json()["message"] == "not enough funds"
+
+    def test_express_transfer(self, account):
+        requests.post(URL, json=account)
+        requests.post(
+            f"{URL}/{account['pesel']}/transfer",
+            json={"amount": 500, "type": "incoming"}
+        )
+
+        response = requests.post(
+            f"{URL}/{account['pesel']}/transfer",
+            json={"amount": 100, "type": "express"}
+        )
+
+        requests.delete(f"{URL}/{account['pesel']}") 
+
+        assert response.status_code == 200
+        assert response.json()["message"] == "Zlecenie przyjęto do realizacji"
+
+    def test_outgoing_transfer_not_enough_balance(self, account):
+        requests.post(URL, json=account)
+        response = requests.post(
+            f"{URL}/{account['pesel']}/transfer",
+            json={"amount": 100, "type": "express"}
+        )
+
+        requests.delete(f"{URL}/{account['pesel']}") 
+
+        assert response.status_code == 422
+        assert response.json()["message"] == "not enough funds"
+
+    def test_transfer_wrong_type(self, account):
+        requests.post(URL, json=account)
+        response = requests.post(
+            f"{URL}/{account['pesel']}/transfer",
+            json={"amount": 500, "type": "bad_type"}
+        )
+
+        requests.delete(f"{URL}/{account['pesel']}") 
+
+        assert response.status_code == 400
+        assert response.json()["message"] == "wrong transfer type"
