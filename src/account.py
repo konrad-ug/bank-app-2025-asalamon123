@@ -1,3 +1,7 @@
+import os
+import requests
+from datetime import date
+
 class Account:
     def __init__(self, first_name, last_name, pesel, promo_code):
         self.first_name = first_name
@@ -108,10 +112,12 @@ class BusinessAccount(Account):
     def __init__(self, company_name, nip): 
         self.company_name = company_name
 
-        if len(nip) == 10 and nip.isdigit(): 
+        if len(nip) == 10 and nip.isdigit():
+            if not self.is_nip_valid(nip):
+                raise ValueError("Company not registered!!")
             self.nip = nip
-        else: 
-            self.nip = "Invalid"
+        else:
+            self.nip = "Invalid" 
 
         self.balance = 0
         self.history = []
@@ -136,6 +142,30 @@ class BusinessAccount(Account):
             return True
 
         return False 
+    
+    @staticmethod
+    def is_nip_valid(nip):
+        MF_BASE_URL = os.getenv(
+            "BANK_APP_MF_URL",
+            "https://wl-test.mf.gov.pl"
+        )
+
+        today = date.today().isoformat()
+
+        url = f"{MF_BASE_URL}/api/search/nip/{nip}?date={today}"
+
+        response = requests.get(url)
+        print(f"MF response for NIP {nip}: {response.text}")
+
+        if response.status_code != 200:
+            return False
+
+        data = response.json()
+
+        try:
+            return data["result"]["subject"]["statusVat"] == "Czynny"
+        except:
+            return False
 
 
 

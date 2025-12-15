@@ -1,13 +1,19 @@
 import pytest
 from src.account import BusinessAccount
+from unittest.mock import patch
 
 @pytest.fixture
 def acc():
-    return BusinessAccount("MegaCorp", "1234567890")
+    with patch("src.account.requests.get") as mock_get:
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.json.return_value = {
+            "result": {"subject": {"statusVat": "Czynny"}}
+        }
+        yield BusinessAccount("MegaCorp", "1234567890")
 
 class TestBusinessAccount: 
-    def test_business_account_creation(self):
-        account = BusinessAccount("MegaCorp", "1234567890")
+    def test_business_account_creation(self, acc):
+        account = acc
         assert account.company_name == "MegaCorp"
         assert account.nip == "1234567890"
         assert account.balance == 0
@@ -19,34 +25,34 @@ class TestBusinessAccount:
 
     
 class TestBusinessAccountTransfers:
-    def test_recieve_transfer_for_business_account(self):
-        account = BusinessAccount("MegaCorp", "1234567890")
+    def test_recieve_transfer_for_business_account(self, acc):
+        account = acc
         result = account.recieve_transfer(100)
         assert result is True
         assert account.balance == 100
 
-    def test_send_transfer_for_business_account(self):
-        account = BusinessAccount("MegaCorp", "1234567890")
+    def test_send_transfer_for_business_account(self, acc):
+        account = acc
         account.recieve_transfer(200)
         result = account.send_transfer(50)
         assert result is True
         assert account.balance == 150
 
-    def test_send_fails_if_not_enough_balance_for_business_account(self): 
-        account = BusinessAccount("MegaCorp", "1234567890")
+    def test_send_fails_if_not_enough_balance_for_business_account(self, acc): 
+        account = acc
         result = account.send_transfer(50)
         assert result is False
         assert account.balance == 0
 
-    def test_express_transfer_business_account(self):
-        account = BusinessAccount("MegaCorp", "1234567890")
+    def test_express_transfer_business_account(self, acc):
+        account = acc
         account.recieve_transfer(100)
         result = account.send_express_transfer(100)
         assert result is True
         assert account.balance == -5
 
-    def test_failed_express_transfer_business_account(self):
-        account = BusinessAccount("MegaCorp", "1234567890")
+    def test_failed_express_transfer_business_account(self, acc):
+        account = acc
         account.recieve_transfer(50)
         result = account.send_express_transfer(100)
         assert result is False
