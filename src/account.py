@@ -164,3 +164,6 @@ class AccountRegistry:
                 del self.accounts[i]  
                 return True
         return False
+
+    def exists(self, pesel):
+        return self.search_by_pesel(pesel) is not None

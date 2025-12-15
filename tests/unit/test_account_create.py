@@ -211,7 +211,7 @@ class TestAccountLoan:
         assert acc._recent_transfers_positive() is False
 
 
-class TestAddToRegistry: 
+class TestRegistry: 
     def test_create_empty_registry(self, registry):
         assert registry.accounts == []
 
@@ -263,7 +263,19 @@ class TestAddToRegistry:
 
         assert result == 2
 
-    def test_count_empty(self, registry, acc, acc2):
+    def test_count_empty(self, registry):
         result = registry.count_accounts()
 
         assert result == 0
+
+    def test_exists(self, registry, acc):
+        registry.add_account(acc)
+
+        result = registry.exists(acc.pesel)
+
+        assert result == True
+
+    def test_not_exists(self, registry, acc):
+        result = registry.exists(acc.pesel)
+
+        assert result == False

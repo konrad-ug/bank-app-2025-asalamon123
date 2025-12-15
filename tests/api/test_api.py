@@ -35,6 +35,18 @@ class TestAccount:
 
         requests.delete(f"{URL}/{account['pesel']}")
 
+
+    def test_account_already_exists_for_pesel(self, account):
+        requests.post(URL, json=account)
+        response = requests.post(URL, json=account)
+
+        assert response.status_code == 409
+        data = response.json()
+        assert "message" in data
+        assert data["message"] == "Account with given pesel already exists"
+
+        requests.delete(f"{URL}/{account['pesel']}") 
+
     def test_get_account_not_found(self):
         response = requests.get(f"{URL}/00000000000")
         assert response.status_code == 404
