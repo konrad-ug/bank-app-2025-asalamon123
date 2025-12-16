@@ -1,6 +1,7 @@
 import pytest
 from src.account import Account
 from src.account import AccountRegistry
+from unittest.mock import patch
 
 @pytest.fixture
 def acc():
@@ -279,3 +280,14 @@ class TestRegistry:
         result = registry.exists(acc.pesel)
 
         assert result == False
+
+
+class TestAccountEmail:
+    @patch("lib.smtp.SMTPClient.send")
+        def test_send_email(self, acc, mock_send):
+            mock_send.return_value = True
+            acc.history = [1000, -100, 500]
+
+            result = acc.send_history_via_email("random@mail.com")
+
+            

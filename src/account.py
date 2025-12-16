@@ -1,6 +1,7 @@
 import os
 import requests
 from datetime import date
+from lib.smtp import SMTPClient
 
 class Account:
     def __init__(self, first_name, last_name, pesel, promo_code):
@@ -106,6 +107,13 @@ class Account:
 
         return False 
 
+    def send_history_via_email(self, email_address) -> bool:
+        subject = f"Account Transfer History {date.today().isoformat()}"
+        text = f"Personal account history: {self.history}"
+        smtp = SMTPClient()
+        return smtp.send(subject. text, email_address)
+
+
 
 
 class BusinessAccount(Account):
@@ -142,6 +150,12 @@ class BusinessAccount(Account):
             return True
 
         return False 
+
+    def send_history_via_email(self, email_address) -> bool:
+        subject = f"Account Transfer History {date.today().isoformat()}"
+        text = f"Company account history: {self.history}"
+        smtp = SMTPClient()
+        return smtp.send(subject. text, email_address)
     
     @staticmethod
     def is_nip_valid(nip):
