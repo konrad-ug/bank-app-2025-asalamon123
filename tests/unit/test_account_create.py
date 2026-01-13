@@ -2,6 +2,7 @@ import pytest
 from src.account import Account
 from src.account import AccountRegistry
 from unittest.mock import patch
+from datetime import date
 
 @pytest.fixture
 def acc():
@@ -284,10 +285,18 @@ class TestRegistry:
 
 class TestAccountEmail:
     @patch("lib.smtp.SMTPClient.send")
-        def test_send_email(self, acc, mock_send):
-            mock_send.return_value = True
-            acc.history = [1000, -100, 500]
+    def test_send_email(self, mock_send, acc):
+        mock_send.return_value = True
+        acc.recieve_transfer(1000)
+        acc.send_transfer(100)
+        acc.recieve_transfer(500)
 
-            result = acc.send_history_via_email("random@mail.com")
+        result = acc.send_history_via_email("random@mail.com")
 
-            
+        subject, text, email = mock_send.call_args[0]
+
+
+        assert subject == f"Account Transfer History {date.today().isoformat()}"
+        assert text == "Personal account history: [1000, -100, 500]"
+        assert email == "random@mail.com"
+        assert result == True

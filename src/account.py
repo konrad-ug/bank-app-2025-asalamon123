@@ -111,7 +111,7 @@ class Account:
         subject = f"Account Transfer History {date.today().isoformat()}"
         text = f"Personal account history: {self.history}"
         smtp = SMTPClient()
-        return smtp.send(subject. text, email_address)
+        return smtp.send(subject, text, email_address)
 
 
 
@@ -155,7 +155,7 @@ class BusinessAccount(Account):
         subject = f"Account Transfer History {date.today().isoformat()}"
         text = f"Company account history: {self.history}"
         smtp = SMTPClient()
-        return smtp.send(subject. text, email_address)
+        return smtp.send(subject, text, email_address)
     
     @staticmethod
     def is_nip_valid(nip):
