@@ -27,7 +27,7 @@ def is_account_count_equal_to(context, count):
     response = requests.get(URL + "/api/accounts")
     assert response.status_code == 200
     accounts = response.json()
-    assert len(accounts) == int(count), f"Expected {count} accounts, got {len(accounts)}"
+    assert len(accounts) == int(count)
 
 @step('Account with pesel "{pesel}" exists in registry')
 def check_account_with_pesel_exists(context, pesel):
