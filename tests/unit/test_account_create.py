@@ -284,7 +284,7 @@ class TestRegistry:
 
 
 class TestAccountEmail:
-    @patch("lib.smtp.SMTPClient.send")
+    @patch("utils.smtp.SMTPClient.send")
     def test_send_email(self, mock_send, acc):
         mock_send.return_value = True
         acc.recieve_transfer(1000)

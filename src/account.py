@@ -1,7 +1,7 @@
 import os
 import requests
 from datetime import date
-from lib.smtp import SMTPClient
+from utils.smtp import SMTPClient
 
 class Account:
     def __init__(self, first_name, last_name, pesel, promo_code):
