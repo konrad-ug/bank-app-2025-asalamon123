@@ -29,7 +29,7 @@ jobs:
 
       - name: Start flask
         run: |
-          export FLASK_APP=app/api.py
+          export FLASK_APP=app.api
           export FLASK_ENV=development
           export PYTHONPATH=$GITHUB_WORKSPACE
           flask run &
