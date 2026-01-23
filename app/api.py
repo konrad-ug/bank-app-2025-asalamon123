@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
 from src.account import Account
 from src.account import AccountRegistry
+from src.mongo_repository import MongoAccountsRepository
 
 app = Flask(__name__)
 registry = AccountRegistry()
+mongo_repo = MongoAccountsRepository()
 
 @app.route("/api/accounts", methods=['POST'])
 def create_account():
@@ -102,3 +104,16 @@ def transfer(pesel):
         return jsonify({"message": "wrong transfer type"}), 400
     
     return jsonify({"message": "Zlecenie przyjęto do realizacji"}), 200
+
+
+
+@app.route("/api/accounts/save", methods=['POST'])
+def save_accounts():
+    data = request.get_json()  
+    mongo_repo.save_all(data)
+    return jsonify({"status": "saved", "count": len(data)}), 200
+
+@app.route("/api/accounts/load", methods=['POST'])
+def load_accounts():
+    accounts = mongo_repo.load_all()
+    return jsonify({"accounts": accounts}), 200

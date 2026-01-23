@@ -112,6 +112,7 @@ class Account:
         text = f"Personal account history: {self.history}"
         smtp = SMTPClient()
         return smtp.send(subject, text, email_address)
+    
 
 
 
@@ -211,3 +212,6 @@ class AccountRegistry:
 
     def exists(self, pesel):
         return self.search_by_pesel(pesel) is not None
+    
+    def clear_all(self):
+        self.accounts.clear()

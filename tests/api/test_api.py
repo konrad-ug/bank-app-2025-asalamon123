@@ -1,6 +1,6 @@
 import pytest
 import requests
-
+from app.api import registry
 
 @pytest.fixture
 def account():
@@ -13,6 +13,11 @@ def account():
 
 URL = "http://127.0.0.1:5000/api/accounts"
 
+@pytest.fixture(autouse=True)
+def cleanup_account(account):
+    requests.delete(f"{URL}/{account['pesel']}")
+    yield
+    requests.delete(f"{URL}/{account['pesel']}")
 
 class TestAccount:
     def test_create_account(self, account):
