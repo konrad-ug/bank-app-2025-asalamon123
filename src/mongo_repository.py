@@ -7,9 +7,6 @@ class MongoAccountsRepository:
         if collection is not None:
             self._collection = collection
         else:
-            import os
-            from pymongo import MongoClient
-
             db_name = db_name or os.getenv("MONGO_DB", "bank_app")
             collection_name = collection_name or os.getenv("MONGO_COLLECTION", "accounts")
 
