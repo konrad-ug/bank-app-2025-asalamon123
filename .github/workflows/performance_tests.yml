@@ -35,6 +35,17 @@ jobs:
           export PYTHONPATH=$GITHUB_WORKSPACE
           flask run &
 
+      - name: Wait for Flask to be ready
+        run: |
+          for i in {1..10}; do
+            if curl -s http://127.0.0.1:5000 >/dev/null; then
+              echo "Flask is up!"
+              break
+            fi
+            echo "Waiting for Flask..."
+            sleep 1
+          done
+
       - name: Execute API performance tests
         run: |
           python3 -m pytest tests/perf
